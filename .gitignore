@@ -1,0 +1,4 @@
+*.swp
+*.db
+
+config.inc.php
