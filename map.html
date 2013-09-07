@@ -1,0 +1,42 @@
+<div id="map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+
+<script type="text/javascript">
+	var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png';
+	var basemap = new L.TileLayer(cloudmadeUrl, {maxZoom: 18});
+
+	var map = new L.Map('map', {
+		layers: [basemap],
+		center: new L.LatLng(47.2, 1.8), zoom: 6
+	});
+
+	new L.Control.GeoSearch({
+		provider: new L.GeoSearch.Provider.Google()
+	}).addTo(map);
+
+	map.on('click', function(e) {
+		var m = new L.Marker(e.latlng, {
+			draggable: true,
+			title: 'New POI',
+		}).addTo(map);
+		m.bindPopup("<a href='/?q=create&latlng=" + [e.latlng.lat, e.latlng.lng] + "'>Create POI here</a>", {new: true, marker: m});
+		m.openPopup();
+	});
+	map.on('popupclose', function(e) {
+		if (e.popup.options != undefined && e.popup.options.new) {
+			map.removeLayer(e.popup.options.marker);
+		}
+	});
+
+	for (var i in poi) {
+		var place = poi[i];
+		L.marker([place.latitude, place.longitude], {
+				title: place.title
+			})
+			.addTo(map)
+			.bindPopup(
+				'<div class="poi-edit"><a href="/?q=edit&id=' + place.id + '">edit</a> / <a onclick="return confirm(\'Delete this POI?\')" href="/?q=delete&id=' + place.id + '">delete</a></div>' +
+				'<div class="poi-description">' + place.description + '</div>'
+			);
+	}
+
+</script>
