@@ -115,6 +115,18 @@ function list_json() {
 
 	global $db;
 	foreach ($db->query($sql) as $row) {
+		$description = '<h2>' . $row['title'] . '</h2>' . nl2br($row['description']);
+
+		$description = preg_replace_callback('#(https?://([^/]+)[^ ,<]*)#', function($matches) {
+			$html = '<a href="' . $matches[1] . '">' . $matches[2] . '</a>';
+
+			if ($ogp = opengraph($matches[1])) {
+				$html .= $ogp;
+			}
+
+			return $html;
+		}, $description);
+
 		$data[] = array(
 			'id' => $row['id'],
 			'latitude' => (float)$row['latitude'],
@@ -122,10 +134,71 @@ function list_json() {
 			'icon' => $row['icon'],
 			'title' => $row['title'],
 			'type' => $row['type'],
-			'description' => $row['description'],
+			'description' => $description,
 		);
 	}
 
 	return '<script type="text/javascript">var poi = ' . json_encode($data) . ';</script>';
+}
+
+function opengraph($url) {
+	if (!file_exists('cache')) {
+		mkdir('cache');
+	}
+
+	$cache = 'cache/' . md5($url) . '.ogp';
+
+	if (true or !file_exists($cache)) {
+		$return = FALSE;
+
+		$c = curl_init();
+		curl_setopt_array($c, array(
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => TRUE,
+			CURLOPT_FOLLOWLOCATION => TRUE,
+			CURLOPT_CONNECTTIMEOUT => 2,
+			CURLOPT_TIMEOUT => 2,
+			CURLOPT_HEADER => TRUE,
+			CURLOPT_NOBODY => TRUE,
+		));
+		curl_exec($c);
+		$headers = curl_getinfo($c);
+
+		if (strpos($headers['content_type'], 'text/html') === 0) {
+			$c = curl_init();
+			curl_setopt_array($c, array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => TRUE,
+				CURLOPT_FOLLOWLOCATION => TRUE,
+				CURLOPT_CONNECTTIMEOUT => 2,
+				CURLOPT_TIMEOUT => 2,
+			));
+			$data = curl_exec($c);
+
+			if ($data) {
+				$dom = new DOMDocument();
+				$dom->loadHTML($data);
+
+				foreach ($dom->getElementsByTagName('meta') as $meta) {
+					$property = $meta->getAttribute('property');
+
+					switch ($property) {
+						case 'og:image':
+							$return = '<img class="og-preview" src="' . $meta->getAttribute('content') . '" />';
+							break;
+						case 'twitter:image':
+							$return = '<img class="og-preview" src="' . $meta->getAttribute('value') . '" />';
+							break;
+					}
+				}
+			}
+		} else if (strpos($headers['content_type'], 'image') === 0) {
+			$return = '<img class="og-preview" src="' . $url . '" />';
+		}
+
+		file_put_contents($cache, serialize($return));
+	}
+
+	return unserialize(file_get_contents($cache));
 }
 

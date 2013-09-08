@@ -46,7 +46,10 @@
 			.addTo(map)
 			.bindPopup(
 				'<div class="poi-edit"><a href="/?q=edit&id=' + place.id + '">edit</a> / <a onclick="return confirm(\'Delete this POI?\')" href="/?q=delete&id=' + place.id + '">delete</a></div>' +
-				'<div class="poi-description">' + place.description + '</div>'
+				'<div class="poi-description">' + place.description + '</div>',
+				{
+					maxWidth: 500
+				}
 			);
 	}
 

@@ -69,3 +69,9 @@ ul.icons li > * {
 		saturate(400%) hue-rotate(70deg) drop-shadow(0 0 3px black);
 }
 
+.og-preview {
+	max-width: 100%;
+	max-height: 200px;
+	display: block;
+}
+

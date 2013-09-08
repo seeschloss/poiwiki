@@ -1,5 +1,5 @@
 <?php
 
-$pdo_dsn = 'mysql:host=localhost;dbname=poiwiki';
-$pdo_user = 'poiwiki';
-$pdo_pass = 'pass';
+define('PDO_DSN', 'sqlite:.poiwiki.db');
+define('PDO_USER', NULL);
+define('PDO_PASS', NULL);
