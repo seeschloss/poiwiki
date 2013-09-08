@@ -29,9 +29,20 @@
 
 	for (var i in poi) {
 		var place = poi[i];
-		L.marker([place.latitude, place.longitude], {
-				title: place.title
-			})
+
+		var options = {
+			title: place.title,
+			riseOnHover: true
+		};
+
+		if (place.icon) {
+			options.icon = L.icon({
+				iconUrl: place.icon,
+				iconSize: [30, 30],
+				className: place.type
+			});
+		}
+		L.marker([place.latitude, place.longitude], options)
 			.addTo(map)
 			.bindPopup(
 				'<div class="poi-edit"><a href="/?q=edit&id=' + place.id + '">edit</a> / <a onclick="return confirm(\'Delete this POI?\')" href="/?q=delete&id=' + place.id + '">delete</a></div>' +

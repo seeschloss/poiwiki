@@ -16,7 +16,8 @@ $db->query("
 	CREATE TABLE IF NOT EXISTS poi (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		latitude NUMERIC, longitude NUMERIC,
-		title TEXT, description TEXT
+		title TEXT, description TEXT,
+		type TEXT, icon TEXT
 	)
 ");
 

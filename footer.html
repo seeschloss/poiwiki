@@ -1,2 +1,33 @@
+	<script type="text/javascript">
+		function updateIcon() {
+			var src = document.querySelector('input[name=icon]').value;
+			if (src == '') {
+				return;
+			}
+			var img = document.querySelector('.icon-preview');
+			if (!img) {
+				img = document.createElement('iframe');
+				document.querySelector('input[name=icon]').parentNode.insertBefore(img, document.querySelector('input[name=icon]'));
+			}
+			img.src = src;
+			img.className = 'icon-preview ' + document.querySelector('input[name=type]').value;
+		}
+
+		document.querySelector('input[name=icon]').onchange = updateIcon;
+		document.querySelector('input[name=type]').onkeyup = updateIcon;
+
+		if (document.querySelector('ul.icons')) {
+			var icons = document.querySelectorAll('ul.icons img');
+			for (var i = 0; i < icons.length; i++) {
+				icons.item(i).onclick = function() {
+					var input = document.querySelector('input[name=icon]');
+					input.value = this.src;
+					updateIcon();
+				};
+			}
+		}
+
+		updateIcon();
+	</script>
 </body>
 </html>
