@@ -39,7 +39,7 @@ ul.icons li > * {
 		saturate(400%) hue-rotate(120deg) drop-shadow(0 0 3px black);
 }
 
-.mer {
+.mer, .source {
 	-webkit-filter: invert(100%) brightness(50%) sepia(100%)
 		saturate(400%) hue-rotate(140deg) drop-shadow(0 0 3px black);
 }
@@ -54,17 +54,17 @@ ul.icons li > * {
 		saturate(400%) hue-rotate(00deg) drop-shadow(0 0 3px black);
 }
 
-.chateau, .ruines {
+.chateau, .ruines, .prehistorique {
 	-webkit-filter: invert(100%) brightness(50%) sepia(100%)
 		saturate(400%) hue-rotate(360deg) drop-shadow(0 0 3px black);
 }
 
-.industriel {
+.industriel, .moulin {
 	-webkit-filter: invert(100%) brightness(50%) sepia(100%)
 		saturate(400%) hue-rotate(320deg) drop-shadow(0 0 3px black);
 }
 
-.jardin, .foret {
+.jardin, .foret, .nature {
 	-webkit-filter: invert(100%) brightness(50%) sepia(100%)
 		saturate(400%) hue-rotate(70deg) drop-shadow(0 0 3px black);
 }

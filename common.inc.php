@@ -115,9 +115,8 @@ function list_json() {
 
 	global $db;
 	foreach ($db->query($sql) as $row) {
-		$description = '<h2>' . $row['title'] . '</h2>' . nl2br($row['description']);
-
-		$description = preg_replace_callback('#(https?://([^/]+)[^ ,<]*)#', function($matches) {
+		$description = str_replace("\n", " \n", $row['description']);
+		$description = preg_replace_callback('#(https?://([^/ ,<]+)[^ ,<]*)#', function($matches) {
 			$html = '<a href="' . $matches[1] . '">' . $matches[2] . '</a>';
 
 			if ($ogp = opengraph($matches[1])) {
@@ -126,6 +125,8 @@ function list_json() {
 
 			return $html;
 		}, $description);
+		$description = nl2br($description);
+		$description = '<h2>' . $row['title'] . '</h2>' . $description;
 
 		$data[] = array(
 			'id' => $row['id'],
@@ -148,7 +149,7 @@ function opengraph($url) {
 
 	$cache = 'cache/' . md5($url) . '.ogp';
 
-	if (true or !file_exists($cache)) {
+	if (!file_exists($cache)) {
 		$return = FALSE;
 
 		$c = curl_init();
